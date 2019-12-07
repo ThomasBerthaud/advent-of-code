@@ -122,11 +122,4 @@ class IntCode {
 }
 
 const computer = new IntCode(MEMORY);
-console.log(computer.run(1));
-
-// TESTS
-// const test = new IntCode([3, 0, 4, 0, 99]);
-// console.log(test.run(2345));
-
-// const test = new IntCode([1002, 4, 3, 4, 33]);
-// console.log(test.run(1));
+console.log(computer.run(5));
