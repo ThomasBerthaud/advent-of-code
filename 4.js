@@ -12,12 +12,7 @@ console.log(nb);
 function hasTwoAdjacentDigits(i) {
   const digits = i.toString().split("");
   for (let i = -1; i < digits.length - 2; i++) {
-    if (
-      digits[i] !== digits[i + 1] &&
-      digits[i + 1] === digits[i + 2] &&
-      digits[i + 2] !== digits[i + 3]
-    )
-      return true;
+    if (digits[i] !== digits[i + 1] && digits[i + 1] === digits[i + 2] && digits[i + 2] !== digits[i + 3]) return true;
   }
   return false;
 }

@@ -23,8 +23,7 @@ traceWire(wire2, (x, y, dist) => {
   }
 });
 
-const getPointWithBestDistance = (best, point) =>
-  best.dist + best.dist2 > point.dist + point.dist2 ? point : best;
+const getPointWithBestDistance = (best, point) => (best.dist + best.dist2 > point.dist + point.dist2 ? point : best);
 const bestPoint = intersections.reduce(getPointWithBestDistance, {
   dist: Infinity,
   dist2: Infinity

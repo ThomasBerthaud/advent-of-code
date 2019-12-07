@@ -18,11 +18,9 @@ function execute(noun, verb, program) {
   let opCode = program[0];
   while (opCode !== 99) {
     if (opCode === 1) {
-      program[program[index + 3]] =
-        program[program[index + 1]] + program[program[index + 2]];
+      program[program[index + 3]] = program[program[index + 1]] + program[program[index + 2]];
     } else if (opCode === 2) {
-      program[program[index + 3]] =
-        program[program[index + 1]] * program[program[index + 2]];
+      program[program[index + 3]] = program[program[index + 1]] * program[program[index + 2]];
     } else {
       throw new Error("wrong opCode " + opCode);
     }

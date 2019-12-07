@@ -13,7 +13,7 @@ class IntCode {
     this.memory = [...this.initialMemory];
     this.input = input;
     this.output = Infinity;
-    let index = 0;
+    let pointer = 0;
     let [opCode, mode1, mode2, mode3] = this.parseOpCode(this.memory[0]);
     while (opCode !== 99) {
       let nbInstructions;
@@ -22,91 +22,83 @@ class IntCode {
       switch (opCode) {
         // store addition of 1st and 2nd parameter into 3rd parameter
         case 1:
-          this.executeAdd(index, mode1, mode2);
+          this.add(pointer, mode1, mode2);
           nbInstructions = 4;
           break;
         // store multiplication of 1st and 2nd parameter into 3rd parameter
         case 2:
-          this.executeMultiply(index, mode1, mode2);
+          this.multiply(pointer, mode1, mode2);
           nbInstructions = 4;
           break;
         // store input into 1st parameter
         case 3:
-          this.executeStoreInput(index);
+          this.storeInput(pointer);
           nbInstructions = 2;
           break;
         // outputs what is stored in 1st parameter
         case 4:
-          this.executeOutputStored(index, mode1);
+          this.setOutput(pointer, mode1);
           nbInstructions = 2;
           break;
         // jumps to value given by 2nd parameter if 1st paramerer is non-zero
         case 5:
-          jumpIndex = this.executeJumpIfTrue(index, mode1, mode2);
+          jumpIndex = this.jumpIfTrue(pointer, mode1, mode2);
           break;
         // jumps to value given by 2nd parameter if 1st paramerer is zero
         case 6:
-          jumpIndex = this.executeJumpIfFalse(index, mode1, mode2);
+          jumpIndex = this.jumpIfFalse(pointer, mode1, mode2);
           break;
         // if 1st parameter is less than 2nd parameter, store 1 in 3rd parameter, else store 0
         case 7:
-          this.executeLessThan(index, mode1, mode2);
+          this.lessThan(pointer, mode1, mode2);
           nbInstructions = 4;
           break;
         // if 1st parameter is equal to 2nd parameter, store 1 in 3rd parameter, else store 0
         case 8:
-          this.executeEquals(index, mode1, mode2);
+          this.equals(pointer, mode1, mode2);
           nbInstructions = 4;
           break;
         default:
           throw new Error("wrong opCode " + opCode);
       }
-      index = jumpIndex !== null ? jumpIndex : index + nbInstructions;
-      [opCode, mode1, mode2, mode3] = this.parseOpCode(this.memory[index]);
+      pointer = jumpIndex !== null ? jumpIndex : pointer + nbInstructions;
+      [opCode, mode1, mode2, mode3] = this.parseOpCode(this.memory[pointer]);
     }
     return this.output;
   }
 
-  executeAdd(index, mode1, mode2) {
-    this.memory[this.memory[index + 3]] =
-      this.getValue(index + 1, mode1) + this.getValue(index + 2, mode2);
+  add(pointer, mode1, mode2) {
+    this.memory[this.memory[pointer + 3]] = this.getValue(pointer + 1, mode1) + this.getValue(pointer + 2, mode2);
   }
 
-  executeMultiply(index, mode1, mode2) {
-    this.memory[this.memory[index + 3]] =
-      this.getValue(index + 1, mode1) * this.getValue(index + 2, mode2);
+  multiply(pointer, mode1, mode2) {
+    this.memory[this.memory[pointer + 3]] = this.getValue(pointer + 1, mode1) * this.getValue(pointer + 2, mode2);
   }
 
-  executeStoreInput(index) {
-    this.memory[this.memory[index + 1]] = this.input;
+  storeInput(pointer) {
+    this.memory[this.memory[pointer + 1]] = this.input;
   }
 
-  executeOutputStored(index, mode1) {
-    this.output = this.getValue(index + 1, mode1);
+  setOutput(pointer, mode1) {
+    this.output = this.getValue(pointer + 1, mode1);
   }
 
-  executeJumpIfTrue(index, mode1, mode2) {
-    return this.getValue(index + 1, mode1) !== 0
-      ? this.getValue(index + 2, mode2)
-      : index + 3;
+  jumpIfTrue(pointer, mode1, mode2) {
+    return this.getValue(pointer + 1, mode1) !== 0 ? this.getValue(pointer + 2, mode2) : pointer + 3;
   }
 
-  executeJumpIfFalse(index, mode1, mode2) {
-    return this.getValue(index + 1, mode1) === 0
-      ? this.getValue(index + 2, mode2)
-      : index + 3;
+  jumpIfFalse(pointer, mode1, mode2) {
+    return this.getValue(pointer + 1, mode1) === 0 ? this.getValue(pointer + 2, mode2) : pointer + 3;
   }
 
-  executeLessThan(index, mode1, mode2) {
-    this.memory[this.memory[index + 3]] =
-      this.getValue(index + 1, mode1) < this.getValue(index + 2, mode2) ? 1 : 0;
+  lessThan(pointer, mode1, mode2) {
+    this.memory[this.memory[pointer + 3]] =
+      this.getValue(pointer + 1, mode1) < this.getValue(pointer + 2, mode2) ? 1 : 0;
   }
 
-  executeEquals(index, mode1, mode2) {
-    this.memory[this.memory[index + 3]] =
-      this.getValue(index + 1, mode1) === this.getValue(index + 2, mode2)
-        ? 1
-        : 0;
+  equals(pointer, mode1, mode2) {
+    this.memory[this.memory[pointer + 3]] =
+      this.getValue(pointer + 1, mode1) === this.getValue(pointer + 2, mode2) ? 1 : 0;
   }
 
   parseOpCode(instruction) {
@@ -115,9 +107,7 @@ class IntCode {
   }
 
   getValue(indexOrValue, parameterMode) {
-    return parameterMode === 1
-      ? this.memory[indexOrValue]
-      : this.memory[this.memory[indexOrValue]];
+    return parameterMode === 1 ? this.memory[indexOrValue] : this.memory[this.memory[indexOrValue]];
   }
 }
 
