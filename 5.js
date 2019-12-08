@@ -9,10 +9,11 @@ class IntCode {
     this.output = Infinity;
   }
 
+  // TODO refacto pour que chaque fonction gère le saut d'instructions
   run(input) {
     this.memory = [...this.initialMemory];
     this.input = input;
-    this.output = Infinity;
+    this.output = null;
     let pointer = 0;
     let [opCode, mode1, mode2, mode3] = this.parseOpCode(this.memory[0]);
     while (opCode !== 99) {
