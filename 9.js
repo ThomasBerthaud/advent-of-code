@@ -91,16 +91,7 @@ class IntCode {
 
   storeInput(pointer, mode1) {
     if (this.input.length === 0) return true;
-    switch (mode1) {
-      case 0:
-        this.memory[this.memory[pointer + 1]] = this.input.shift();
-        break;
-      case 2:
-        this.memory[this.relativeBase + this.memory[pointer + 1]] = this.input.shift();
-        break;
-      default:
-        throw new Error("wrong parameter mode", parameterMode);
-    }
+    this.setValue(pointer + 1, mode1, this.input.shift());
     return false;
   }
 
