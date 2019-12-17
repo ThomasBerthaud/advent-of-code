@@ -31,7 +31,7 @@ class IntCode {
           break;
         // store multiplication of 1st and 2nd parameter into 3rd parameter
         case 2:
-          this.multiply(this.pointer, mode1, mode2, mdoe3);
+          this.multiply(this.pointer, mode1, mode2, mode3);
           nbInstructions = 4;
           break;
         // store input into 1st parameter
@@ -46,11 +46,11 @@ class IntCode {
           break;
         // jumps to value given by 2nd parameter if 1st paramerer is non-zero
         case 5:
-          jumpIndex = this.jumpIfTrue(this.pointer, mode1, mode2, mode3);
+          jumpIndex = this.jumpIfTrue(this.pointer, mode1, mode2);
           break;
         // jumps to value given by 2nd parameter if 1st paramerer is zero
         case 6:
-          jumpIndex = this.jumpIfFalse(this.pointer, mode1, mode2, mode3);
+          jumpIndex = this.jumpIfFalse(this.pointer, mode1, mode2);
           break;
         // if 1st parameter is less than 2nd parameter, store 1 in 3rd parameter, else store 0
         case 7:
@@ -79,12 +79,14 @@ class IntCode {
     return this.output.splice(0, this.output.length);
   }
 
-  add(pointer, mode1, mode2) {
-    this.memory[this.memory[pointer + 3]] = this.getValue(pointer + 1, mode1) + this.getValue(pointer + 2, mode2);
+  add(pointer, mode1, mode2, mode3) {
+    const sum = this.getValue(pointer + 1, mode1) + this.getValue(pointer + 2, mode2);
+    this.setValue(pointer + 3, mode3, sum);
   }
 
-  multiply(pointer, mode1, mode2) {
-    this.memory[this.memory[pointer + 3]] = this.getValue(pointer + 1, mode1) * this.getValue(pointer + 2, mode2);
+  multiply(pointer, mode1, mode2, mode3) {
+    const multiply = this.getValue(pointer + 1, mode1) * this.getValue(pointer + 2, mode2);
+    this.setValue(pointer + 3, mode3, multiply);
   }
 
   storeInput(pointer, mode1) {
@@ -114,14 +116,14 @@ class IntCode {
     return this.getValue(pointer + 1, mode1) === 0 ? this.getValue(pointer + 2, mode2) : pointer + 3;
   }
 
-  lessThan(pointer, mode1, mode2) {
-    this.memory[this.memory[pointer + 3]] =
-      this.getValue(pointer + 1, mode1) < this.getValue(pointer + 2, mode2) ? 1 : 0;
+  lessThan(pointer, mode1, mode2, mode3) {
+    const value = this.getValue(pointer + 1, mode1) < this.getValue(pointer + 2, mode2) ? 1 : 0;
+    this.setValue(pointer + 3, mode3, value);
   }
 
-  equals(pointer, mode1, mode2) {
-    this.memory[this.memory[pointer + 3]] =
-      this.getValue(pointer + 1, mode1) === this.getValue(pointer + 2, mode2) ? 1 : 0;
+  equals(pointer, mode1, mode2, mode3) {
+    const value = this.getValue(pointer + 1, mode1) === this.getValue(pointer + 2, mode2) ? 1 : 0;
+    this.setValue(pointer + 3, mode3, value);
   }
 
   adjustRelativeBase(pointer, mode1) {
@@ -146,6 +148,19 @@ class IntCode {
     }
   }
 
+  setValue(pointerIndex, parameterMode, value) {
+    switch (parameterMode) {
+      case 0:
+        this.memory[this.memory[pointerIndex]] = value;
+        break;
+      case 2:
+        this.memory[this.relativeBase + this.memory[pointerIndex]] = value;
+        break;
+      default:
+        throw new Error("wrong parameter mode: " + parameterMode);
+    }
+  }
+
   accessMemory(index) {
     if (index < 0) throw new Error("trying to acces negative memory", index);
     return this.memory[index] || 0;
@@ -153,4 +168,4 @@ class IntCode {
 }
 
 const computer = new IntCode(MEMORY);
-console.log(computer.run([1]));
+console.log(computer.run([2]));
