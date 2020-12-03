@@ -1,0 +1,19 @@
+{
+  "Advent of code": {
+    "description": "creates all the boilerplate needed to implement advent of code puzzles",
+    "prefix": "aoc",
+    "body": [
+      "const getInput = require(\"../input-loader\");",
+      "const input = getInput(\"${TM_DIRECTORY/^.+\\/(.*)$/$1/}\", \"$TM_FILENAME_BASE\");\n",
+      "function firstPart() {",
+      "\tconsole.log(\"\\x1b[34mfirst part\\x1b[0m\");",
+      "\t$0",
+      "}",
+      "function secondPart() {",
+      "\tconsole.log(\"\\x1b[second part\\x1b[0m\");",
+      "}\n",
+      "firstPart();",
+      "secondPart();"
+    ]
+  }
+}
