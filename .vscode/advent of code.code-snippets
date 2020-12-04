@@ -8,9 +8,9 @@
       "function firstPart() {",
       "\tconsole.log(\"\\x1b[34mfirst part\\x1b[0m\");",
       "\t$0",
-      "}",
+      "}\n",
       "function secondPart() {",
-      "\tconsole.log(\"\\x1b[second part\\x1b[0m\");",
+      "\tconsole.log(\"\\x1b[34msecond part\\x1b[0m\");",
       "}\n",
       "firstPart();",
       "secondPart();"
